@@ -8,7 +8,7 @@ global $template;
 // Add our template to the global template
 $template->set_filenames(
   array(
-    'plugin_admin_content' => dirname(__FILE__).'/admin.tpl'
+    'plugin_admin_content' => dirname(__FILE__).'/templates/admin.tpl'
   )
 );
 
