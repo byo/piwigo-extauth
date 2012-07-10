@@ -1,0 +1,7 @@
+.extauth .facebook .inner {
+	display: block;
+	text-indent: -99999px;
+	background: url("../images/fbconnect.png") no-repeat scroll left top transparent;
+	width: 105px;
+	height: 27px;
+}
