@@ -44,6 +44,8 @@ class EAPFacebook
 				if ( isset($response['access_token']) )
 				{
 					$fb->setAccessToken($response['access_token']);
+					$_SESSION['fb_'.self::getFbAppId().'_code'] = $_GET['code'];
+					$_SESSION['fb_'.self::getFbAppId().'_access_token'] = $response['access_token'];
 				}
 			}
 
