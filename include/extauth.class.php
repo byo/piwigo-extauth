@@ -3,6 +3,7 @@
 // Chech whether we are indeed included by Piwigo.
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
+include_once('eapfacebook.class.php');
 
 class ExtAuth
 {
@@ -39,7 +40,7 @@ class ExtAuth
 		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
 		{
 			$block->data = array(
-				'fb_login_url' => ''
+				'fb_login_url' => EAPFacebook::getLoginUrl()
 			);
 			$block->template = $this->getPath() . "templates/login.tpl";
 		}
@@ -49,6 +50,13 @@ class ExtAuth
 	// Get the base path of the plugin
 	private static function getPath()
 	{
-		return realpath( PHPWG_PLUGINS_PATH.basename(dirname(__FILE__)) ).'/';
+		return EAP_PATH;
 	}
+	
+	// Get the base url of the plugin
+	private static function getUrl()
+	{
+		return EAP_URL;
+	}
+	
 }
