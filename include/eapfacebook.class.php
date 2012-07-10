@@ -19,18 +19,33 @@ class EAPFacebook
 	
 	public static function getLoginUrl()
 	{
-//		@session_start();
-		return self::getFbObject()->getLoginUrl(array(
+		$ret = self::getFbObject()->getLoginUrl(array(
 				'redirect_uri' => EAP_URL.'fblogin.php'
 		));
+		return $ret;
 	}
 	
 	public static function grabLoginInfo()
 	{
-//		@session_start();
 		try
 		{
 			$fb = self::getFbObject();
+
+			// Some workaround since native methods from the sdk didn't want to work
+			if ( isset( $_GET['code'] ) )
+			{
+				// TODO: CSRF Protection is gone
+				$response = @file_get_contents( 'https://graph.facebook.com/oauth/access_token'.
+					'?client_id='.self::getFbAppId().
+					'&redirect_uri='.urlencode(EAP_URL.'fblogin.php').
+					'&client_secret='.self::getFbAppSecret().
+					'&code='.urlencode($_GET['code']) );
+				parse_str($response,$response);
+				if ( isset($response['access_token']) )
+				{
+					$fb->setAccessToken($response['access_token']);
+				}
+			}
 
 			$user = $fb->getUser();
 			if ( !$user ) return FALSE;
