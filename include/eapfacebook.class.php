@@ -5,9 +5,10 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 // Include facebook sdk classes
 include_once('facebooksdk/facebook.php' );
+include_once('eapbase.class.php');
 
 
-class EAPFacebook
+class EAPFacebook extends EAPBase
 {
 	public static function getFbObject()
 	{
@@ -64,13 +65,13 @@ class EAPFacebook
 	// Get Facebook's application id
 	private static function getFbAppId()
 	{
-		return '';
+		return self::getCfgValue( 'fbAppId', '' );
 	}
 	
 	// Get Facebook's application secret
 	private static function getFbAppSecret()
 	{
-		return '';
+		return self::getCfgValue( 'fbSecret', '' );
 	}
 }
 

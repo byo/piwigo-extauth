@@ -3,9 +3,10 @@
 // Chech whether we are indeed included by Piwigo.
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
+include_once('eapbase.class.php');
 include_once('eapfacebook.class.php');
 
-class ExtAuth
+class ExtAuth extends EAPBase
 {
 	public function __construct()
 	{
@@ -20,7 +21,7 @@ class ExtAuth
 	{
 		$menu[] = array(
 			'NAME'  => 'External authentications',
-			'URL'   => get_admin_plugin_menu_link(dirname(__FILE__)).'/admin.php'
+			'URL'   => get_admin_plugin_menu_link(dirname(dirname(__FILE__))).'/admin.php'
 		);
 		return $menu;
 	}
@@ -36,27 +37,22 @@ class ExtAuth
 	{
 		// We only alter stuff if we're not logged in
 		if ( !is_a_guest() ) return;
+		
+		$fbEnabled = self::getCfgValue( 'fbEnabled', false );
+		
+		if ( !$fbEnabled ) return;
 
 		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
 		{
-			$block->data = array(
-				'fb_login_url' => EAPFacebook::getLoginUrl()
-			);
+			$block->data = array();
+			
+			$block->data['fbEnabled'] = $fbEnabled;
+			if ( $fbEnabled )
+			{
+				$block->data['fbLoginUrl'] = EAPFacebook::getLoginUrl();
+			}
 			$block->template = $this->getPath() . "templates/login.tpl";
 		}
 
 	}
-
-	// Get the base path of the plugin
-	private static function getPath()
-	{
-		return EAP_PATH;
-	}
-	
-	// Get the base url of the plugin
-	private static function getUrl()
-	{
-		return EAP_URL;
-	}
-	
 }

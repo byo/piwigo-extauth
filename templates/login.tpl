@@ -3,12 +3,14 @@
 <dt>{'Connect with:'|@translate}</dt>
 <dd class="extauth">
 {strip}
-	<p class="facebook">
-		<a href="{$block->data.fb_login_url}">
-			<span class="inner">
-				Facebook
-			</span>
-		</a>
-	</p>
+	{if $block->data.fbEnabled }
+		<p class="facebook">
+			<a href="{$block->data.fbLoginUrl|escape}">
+				<span class="inner">
+					Facebook
+				</span>
+			</a>
+		</p>
+	{/if}
 {/strip}
 </dd>
