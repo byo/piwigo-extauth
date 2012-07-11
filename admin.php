@@ -1,39 +1,27 @@
 <?php
-// Chech whether we are indeed included by Piwigo.
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
+include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
 
-include_once('include/eapbase.class.php');
+$template->set_filename('plugin_admin_content', dirname(__FILE__).'/templates/admin.tpl');
 
-$tplargs = array();
+if (!isset($_GET['tab']))
+	$page['tab'] = 'config';
+else
+	$page['tab'] = $_GET['tab'];
 
-if ( isset($_POST['submit']) )
-{
-	$tplargs['updated'] = true;
-	
-	EAPBase::setCfgValues(array(
-		'fbEnabled' => isset( $_POST['fbEnabled'] ) && $_POST['fbEnabled'],
-		'fbAppId'   => $_POST['fbAppId'],
-		'fbSecret'  => $_POST['fbSecret']
-	));
-}
+$my_base_url = get_admin_plugin_menu_link(__FILE__);
 
-$tplargs[ 'fbEnabled' ] = EAPBase::getCfgValue( 'fbEnabled', false );
-$tplargs[ 'fbAppId'   ] = EAPBase::getCfgValue( 'fbAppId',   ''    );
-$tplargs[ 'fbSecret'  ] = EAPBase::getCfgValue( 'fbSecret',  ''    );
+$tabsheet = new tabsheet();
+$tabsheet->add( 'config', 'Configuration', add_url_params( $my_base_url, array('tab'=>'config') ) );
+$tabsheet->add( 'assoc', 'Associate accounts', add_url_params( $my_base_url, array('tab'=>'assoc') ) );
+$tabsheet->select($page['tab']);
 
-// Fetch the template.
-global $template;
+$tabsheet->assign();
 
-// Add our template to the global template
-$template->set_filenames(
-  array(
-    'plugin_admin_content' => dirname(__FILE__).'/templates/admin.tpl'
-  )
-);
-
-$template->assign('extauth',$tplargs);
-
-// Assign the template contents to ADMIN_CONTENT
-$template->assign_var_from_handle('ADMIN_CONTENT', 'plugin_admin_content');
+$my_base_url = $tabsheet->sheets[ $page['tab'] ]['url'];
+$template->set_filename( 'tab_data', dirname(__FILE__).'/templates/admin_'.$page['tab'].'.tpl' );
+include_once( dirname(__FILE__).'/admin_'.$page['tab'].'.php');
+$template->assign_var_from_handle( 'TAB_DATA', 'tab_data');
+$template->assign_var_from_handle( 'ADMIN_CONTENT', 'plugin_admin_content');
 
 

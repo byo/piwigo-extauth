@@ -15,17 +15,17 @@ class EAPUser
 		global $conf;
 
 		$query = "
-		SELECT
-		user.".$conf['user_fields']['id']." as 'id',
-		eap_user.user_id IS NOT NULL as 'known'
-		FROM
-		".EAP_USERS." as eap_user
-		LEFT JOIN
-		".USERS_TABLE." as user
-		ON user.".$conf['user_fields']['id']." = eap_user.user_id
-		WHERE
-		eap_user.platform = '" . pwg_db_real_escape_string($hostPlatform) . "' AND
-		eap_user.id = '" . pwg_db_real_escape_string($hostPlatformId) ."'
+			SELECT
+				user.".$conf['user_fields']['id']." as 'id',
+				eap_user.user_id IS NOT NULL as 'known'
+			FROM
+				".EAP_USERS." as eap_user
+			LEFT JOIN
+				".USERS_TABLE." as user
+				ON user.".$conf['user_fields']['id']." = eap_user.user_id
+			WHERE
+				eap_user.platform = '" . pwg_db_real_escape_string($hostPlatform) . "' AND
+				eap_user.id = '" . pwg_db_real_escape_string($hostPlatformId) ."'
 		";
 
 		$data = pwg_db_fetch_assoc(pwg_query($query));
@@ -67,5 +67,60 @@ class EAPUser
 	{
 		log_user( $user_id, false );
 		redirect( get_gallery_home_url() );
+	}
+	
+	public static function getPendingEntries()
+	{
+		global $conf;
+		
+		$ret = array( 'eap_users' => array(), 'users' => array() );
+		
+		$query = pwg_query( "
+			SELECT platform, id
+			FROM ".EAP_USERS."
+			WHERE user_id < 0
+			ORDER BY platform, id
+		" );
+		if ( !empty($query) )
+		{
+			while ( $row = pwg_db_fetch_assoc( $query ) )
+			{
+				$ret['eap_users'][] = $row;
+			}
+		}
+		
+		$query = pwg_query( "
+			SELECT 
+				".$conf['user_fields']['id']." as user_id,
+				".$conf['user_fields']['username']." as user_name
+			FROM
+				".USERS_TABLE."
+			ORDER BY
+				user_name
+				");
+		if ( !empty( $query ) )
+		{
+			while( $row = pwg_db_fetch_assoc($query) )
+			{
+				$ret['users'][] = $row;
+			}
+		}
+		
+		return $ret;
+	}
+	
+	public static function associateUser( $platform, $id, $user_id )
+	{
+		$query = "
+			UPDATE ".EAP_USERS."
+			SET
+				user_id = ".((int)$user_id)."
+			WHERE
+				platform = '" . pwg_db_real_escape_string($platform) . "' AND
+				id = '" . pwg_db_real_escape_string($id) . "' AND
+				user_id < 0
+		";
+		
+		pwg_query($query);
 	}
 }
