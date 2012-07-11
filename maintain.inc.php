@@ -1,11 +1,26 @@
+<?php
+
+
 function plugin_install() {
-	// Put anything here that should be executed during installation.
+	global $prefixeTable;
+	
+	$q = "
+CREATE TABLE IF NOT EXISTS {$prefixeTable}ext_auth_users(
+	`platform` VARCHAR(30) NOT NULL ,
+	`id` VARCHAR(150) NOT NULL ,
+	`user_id` VARCHAR(45) NULL ,
+	PRIMARY KEY (`platform`, `id`) 
+)";
+
+	pwg_query( $q );
 }
 
 function plugin_activate() {
-	// Put anything here that should be executed during activation.
 }
 
 function plugin_uninstall() {
-	// Put anything here that should be executed during uninstallation.
+	global $prefixeTable;
+
+	$q = "DROP TABLE {$prefixeTable}ext_auth_users";
+	pwg_query($q);
 }
