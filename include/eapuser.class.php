@@ -8,7 +8,7 @@ include_once('defs.php');
 
 include_once( PHPWG_ROOT_PATH.'include/functions_user.inc.php' );
 
-class EAPUser
+class EAPUser extends EAPBase
 {
 	public static function processAuthentication( $hostPlatform, $hostPlatformId, $userInfo )
 	{
@@ -60,7 +60,8 @@ class EAPUser
 
 	private static function showPending()
 	{
-		die( "Thank you for stepping by. Administrators will give you the access soon." );
+		header('Location: ' . self::getUrl() . 'pending.php' );
+		exit(0);
 	}
 
 	private static function login( $user_id )
