@@ -10,8 +10,8 @@
 {/strip}
 <div id="fbDetails" {if !$extauth.fbEnabled}style="display:none;"{/if}>
 <table>
-<tr><td>App Id:</td><td><input type="text" name="fbAppId" value="{$extauth.fbAppId|escape}" /></td></tr>
-<tr><td>Secret:</td><td><input type="text" name="fbSecret" value="{$extauth.fbSecret|escape}" /></td></tr>
+<tr><td>{'App Id:'|@translate}</td><td><input type="text" name="fbAppId" value="{$extauth.fbAppId|@escape}" /></td></tr>
+<tr><td>{'Secret:'|@translate}</td><td><input type="text" name="fbSecret" value="{$extauth.fbSecret|@escape}" /></td></tr>
 </table>
 </div>
 </fieldset>

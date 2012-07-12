@@ -44,6 +44,8 @@ class ExtAuth extends EAPBase
 
 		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
 		{
+			load_language( "plugin.lang", self::getPath() );
+			
 			$block->data = array();
 			
 			$block->data['fbEnabled'] = $fbEnabled;
