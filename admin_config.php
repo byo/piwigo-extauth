@@ -1,6 +1,6 @@
 <?php
 
-// Chech whether we are indeed included by Piwigo.
+// Check whether we are indeed included by Piwigo.
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('include/eapbase.class.php');
@@ -22,5 +22,5 @@ $tplargs[ 'fbEnabled' ] = EAPBase::getCfgValue( 'fbEnabled', false );
 $tplargs[ 'fbAppId'   ] = EAPBase::getCfgValue( 'fbAppId',   ''    );
 $tplargs[ 'fbSecret'  ] = EAPBase::getCfgValue( 'fbSecret',  ''    );
 
-// Fetch the template.
+// Setup the template.
 $template->assign('extauth',$tplargs);
