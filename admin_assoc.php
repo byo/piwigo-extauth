@@ -1,17 +1,13 @@
 <?php
 
-// Chech whether we are indeed included by Piwigo.
+// Check whether we are indeed included by Piwigo.
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('include/eapbase.class.php');
 include_once('include/eapuser.class.php');
 
-$tplargs = array();
-
 if ( isset($_POST['submit']) )
 {
-	$tplargs['updated'] = true;
-
 	if ( isset($_POST['user']) )
 	{	
 		foreach( $_POST['user'] as $user )
@@ -24,6 +20,5 @@ if ( isset($_POST['submit']) )
 	}
 }
 		
-
-// Fetch the template.
+// Setup the template
 $template->assign('extauthpending', EAPUser::getPendingEntries() );
