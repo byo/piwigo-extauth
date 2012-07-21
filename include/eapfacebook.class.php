@@ -35,7 +35,16 @@ class EAPFacebook extends EAPBase
 			// Some workaround since native methods from the sdk didn't want to work
 			if ( isset( $_GET['code'] ) )
 			{
-				// TODO: CSRF Protection is gone
+				$sess_prefix = 'fb_'.self::getFbAppId();
+				if ( !isset( $_GET['state'] )
+				  || !isset( $_SESSION["{$sess_prefix}_state"] )
+				  || ( $_GET['state'] != $_SESSION["{$sess_prefix}_state"] ) )
+				{
+					die('CSRF attack protection. Please try again later.');
+				}
+				unset( $_SESSION["{$sess_prefix}_state"] );
+
+
 				$response = @file_get_contents( 'https://graph.facebook.com/oauth/access_token'.
 					'?client_id='.self::getFbAppId().
 					'&redirect_uri='.urlencode(EAP_URL.'fblogin.php').
@@ -45,8 +54,8 @@ class EAPFacebook extends EAPBase
 				if ( isset($response['access_token']) )
 				{
 					$fb->setAccessToken($response['access_token']);
-					$_SESSION['fb_'.self::getFbAppId().'_code'] = $_GET['code'];
-					$_SESSION['fb_'.self::getFbAppId().'_access_token'] = $response['access_token'];
+					$_SESSION["{$sess_prefix}_code"] = $_GET['code'];
+					$_SESSION["{$sess_prefix}_access_token"] = $response['access_token'];
 				}
 			}
 
