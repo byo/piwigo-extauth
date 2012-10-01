@@ -37,15 +37,20 @@ class EAPFacebook extends EAPBase
 			'secret' => self::getFbAppSecret()
 		));
 	}
-	
+
+	private static function getRedirectUrl()
+	{
+		return EAP_URL.'fblogin.php';
+	}
+
 	public static function getLoginUrl()
 	{
 		$ret = self::getFbObject()->getLoginUrl(array(
-				'redirect_uri' => EAP_URL.'fblogin.php'
+				'redirect_uri' => self::getRedirectUrl()
 		));
 		return $ret;
 	}
-	
+
 	public static function grabLoginInfo()
 	{
 		try
@@ -64,10 +69,9 @@ class EAPFacebook extends EAPBase
 				}
 				unset( $_SESSION["{$sess_prefix}_state"] );
 
-
 				$response = @file_get_contents( 'https://graph.facebook.com/oauth/access_token'.
 					'?client_id='.self::getFbAppId().
-					'&redirect_uri='.urlencode(EAP_URL.'fblogin.php').
+					'&redirect_uri='.urlencode(self::getRedirectUrl()).
 					'&client_secret='.self::getFbAppSecret().
 					'&code='.urlencode($_GET['code']) );
 				parse_str($response,$response);
@@ -81,7 +85,7 @@ class EAPFacebook extends EAPBase
 
 			$user = $fb->getUser();
 			if ( !$user ) return FALSE;
-			
+
 			return $fb->api( '/me' );
 		}
 		catch ( Exception $e )
@@ -90,17 +94,16 @@ class EAPFacebook extends EAPBase
 			return FALSE;
 		}
 	}
-	
+
 	// Get Facebook's application id
 	private static function getFbAppId()
 	{
 		return self::getCfgValue( 'fbAppId', '' );
 	}
-	
+
 	// Get Facebook's application secret
 	private static function getFbAppSecret()
 	{
 		return self::getCfgValue( 'fbSecret', '' );
 	}
 }
-
