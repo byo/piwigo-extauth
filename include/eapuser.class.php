@@ -49,23 +49,29 @@ class EAPUser extends EAPBase
 		";
 
 		$data = pwg_db_fetch_assoc(pwg_query($query));
-		if ( $data === FALSE )
+		if ( !is_array($data) )
 		{
 			// Unknown user
 			$query = "
 			INSERT INTO ".EAP_USERS."(
 			user_id,
 			platform,
-			id
+			id,
+			date_added,
+			name,
+			email
 			)
 			VALUES(
 			-1,
 			'" . pwg_db_real_escape_string($hostPlatform) . "',
-			'" . pwg_db_real_escape_string($hostPlatformId) . "'
+			'" . pwg_db_real_escape_string($hostPlatformId) . "',
+			NOW(),
+			'" . pwg_db_real_escape_string($userInfo['name']) . "',
+			'" . pwg_db_real_escape_string($userInfo['email']) . "'
 			)";
 				
 			pwg_query($query);
-				
+
 			self::showPending();
 		}
 		else if ( $data['id'] === null )
@@ -97,7 +103,7 @@ class EAPUser extends EAPBase
 		$ret = array( 'eap_users' => array(), 'users' => array() );
 		
 		$query = pwg_query( "
-			SELECT platform, id
+			SELECT platform, id, name, email
 			FROM ".EAP_USERS."
 			WHERE user_id < 0
 			ORDER BY platform, id
@@ -145,3 +151,4 @@ class EAPUser extends EAPBase
 		pwg_query($query);
 	}
 }
+

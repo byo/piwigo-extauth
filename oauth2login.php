@@ -3,7 +3,7 @@
 // | Piwigo - external authentication plugin                               |
 // |                                 https://github.com/byo/piwigo-extauth |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2012 Bartlomiej (byo) wiecki                             |
+// | Copyright(C) 2013 Bartlomiej (byo) Swiecki                            |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -21,29 +21,45 @@
 // | USA.                                                                  |
 // +-----------------------------------------------------------------------+
 
-function plugin_install() {
-	global $prefixeTable;
-	
-	$q = "
-CREATE TABLE IF NOT EXISTS {$prefixeTable}ext_auth_users(
-	`platform` VARCHAR(30) NOT NULL ,
-	`id` VARCHAR(150) NOT NULL ,
-	`user_id` VARCHAR(45) NULL ,
-	`name` VARCHAR(150) NOT NULL DEFAULT '',
-	`email` VARCHAR(300) NOT NULL DEFAULT '',
-	PRIMARY KEY (`platform`, `id`) 
-)";
+define('PHPWG_ROOT_PATH', '../../');
 
-	pwg_query( $q );
+include_once(PHPWG_ROOT_PATH . 'include/common.inc.php');
+require_once(PHPWG_ROOT_PATH . 'include/functions_session.inc.php' );
+
+include_once('include/eapuser.class.php');
+include_once('include/eapoauth2.class.php');
+
+class ConfigSetter extends EAPBase
+{
+	public static function setup()
+	{
+		self::setCfgValues(array(
+			'fb_id'     => '494494263910157',
+			'fb_secret' => '6a89b3021c24db58d95714ff739fcd47',
+			'google_id' => '553659678064.apps.googleusercontent.com',
+			'google_secret' => 'FpgMVQ8sp9C6b_ujamz9RJ4V',
+		));
+	}
 }
 
-function plugin_activate() {
+ConfigSetter::setup();
+
+isset($_GET['p']) or die( "Missing platform identifier" );
+
+$platform = $_GET['p'];
+$oauth = new EAPOauth2( $platform );
+
+// Get the access code
+if ( !isset( $_GET['code'] ) )
+{
+	$url = $oauth->getLoginUrl();
+	header("Location: $url");
+	exit(0);
 }
 
-function plugin_uninstall() {
-	global $prefixeTable;
+// Get the information about the user
+$user = $oauth->grabLoginInfo();
+if ( $user === FALSE ) die( 'Error' );
 
-	$q = "DROP TABLE {$prefixeTable}ext_auth_users";
-	pwg_query($q);
-}
+EAPUser::processAuthentication( $platform, $user['id'], $user );
 

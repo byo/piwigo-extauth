@@ -27,15 +27,15 @@
 
 <dt>{'Connect with:'|@translate}</dt>
 <dd class="extauth">
+{foreach from=$block->data.platforms key=n item=pl}
 {strip}
-	{if $block->data.fbEnabled }
-		<p class="facebook">
-			<a href="{$block->data.fbLoginUrl|escape}">
-				<span class="inner">
-					Facebook
-				</span>
-			</a>
-		</p>
-	{/if}
+	<p class="{$n|escape}">
+		<a href="{$pl.loginUrl|escape}">
+			<span class="inner">
+				{$pl.name|escape}
+			</span>
+		</a>
+	</p>
 {/strip}
+{/foreach}
 </dd>

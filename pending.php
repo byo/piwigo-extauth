@@ -3,7 +3,7 @@
 // | Piwigo - external authentication plugin                               |
 // |                                 https://github.com/byo/piwigo-extauth |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2012 Bartlomiej (byo) wiecki                             |
+// | Copyright(C) 2012 Bartlomiej (byo) Swiecki                            |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
@@ -43,6 +43,5 @@ if (!isset($themeconf['hide_menu_on']) OR !in_array('extAuthPending', $themeconf
 }
 
 include(PHPWG_ROOT_PATH.'include/page_header.php');
-include(PHPWG_ROOT_PATH.'include/page_messages.php');
 $template->pparse('eap_pending');
 include(PHPWG_ROOT_PATH.'include/page_tail.php');

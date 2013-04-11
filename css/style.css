@@ -1,7 +1,19 @@
-.extauth .facebook .inner {
+.extauth .inner {
 	display: block;
 	text-indent: -99999px;
-	background: url("../images/fbconnect.png") no-repeat scroll left top transparent;
 	width: 105px;
 	height: 27px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 0;
+	padding-bottom: 10px;
 }
+
+.extauth .google .inner {
+	background: url("../images/sign-in-with-google.png") no-repeat scroll left top transparent;
+}
+
+.extauth .fb .inner {
+	background: url("../images/fbconnect.png") no-repeat scroll left top transparent;
+}
+

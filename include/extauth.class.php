@@ -25,6 +25,8 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('eapbase.class.php');
 include_once('eapfacebook.class.php');
+include_once('eapoauth2.class.php');
+include_once('platforms.php');
 
 class ExtAuth extends EAPBase
 {
@@ -55,26 +57,36 @@ class ExtAuth extends EAPBase
 	// Prepare out custom menu block to contain usual login form and extra login fields
 	public function apply_menubar_blocks( $mgr )
 	{
+		global $PLATFORMS;
+
 		// We only alter stuff if we're not logged in
 		if ( !is_a_guest() ) return;
+
+		$data = array('platforms'=>array());
+		$anyEnabled = false;
 		
-		$fbEnabled = self::getCfgValue( 'fbEnabled', false );
+		foreach( $PLATFORMS as $name => $info )
+		{
+			$enabled = self::getCfgValue( "{$name}_enabled", false );
+			if ( $enabled )
+			{
+				$oauth = new EAPOauth2( $name );
+				$data['platforms'][$name] = array(
+					'info'     => $info,
+					'loginUrl' => $oauth->getLoginUrl()
+				);
+				$anyEnabled = true;
+			}
+		}
 		
-		if ( !$fbEnabled ) return;
+		if ( !$anyEnabled ) return;
 
 		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
 		{
 			load_language( "plugin.lang", self::getPath() );
 			
-			$block->data = array();
-			
-			$block->data['fbEnabled'] = $fbEnabled;
-			if ( $fbEnabled )
-			{
-				$block->data['fbLoginUrl'] = EAPFacebook::getLoginUrl();
-			}
+			$block->data = $data;
 			$block->template = $this->getPath() . "templates/login.tpl";
 		}
-
 	}
 }

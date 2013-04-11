@@ -24,6 +24,7 @@
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('include/eapbase.class.php');
+include_once('include/platforms.php');
 
 $tplargs = array();
 
@@ -31,16 +32,27 @@ if ( isset($_POST['submit']) )
 {
 	$tplargs['updated'] = true;
 
-	EAPBase::setCfgValues(array(
-			'fbEnabled' => isset( $_POST['fbEnabled'] ) && $_POST['fbEnabled'],
-			'fbAppId'   => $_POST['fbAppId'],
-			'fbSecret'  => $_POST['fbSecret']
-	));
+	foreach( $PLATFORMS as $platform => $pinfo )
+	{
+		EAPBase::setCfgValues(array(
+				"{$platform}_enabled" => isset( $_POST["{$platform}_enabled"] ) && $_POST["{$platform}_enabled"],
+				"{$platform}_id"      => $_POST["{$platform}_id"],
+				"{$platform}_secret"  => $_POST["{$platform}_secret"],
+		));
+	}
 }
 
-$tplargs[ 'fbEnabled' ] = EAPBase::getCfgValue( 'fbEnabled', false );
-$tplargs[ 'fbAppId'   ] = EAPBase::getCfgValue( 'fbAppId',   ''    );
-$tplargs[ 'fbSecret'  ] = EAPBase::getCfgValue( 'fbSecret',  ''    );
+$tplargs[ 'platforms' ] = array();
+foreach( $PLATFORMS as $platform => $pinfo )
+{
+	$tplargs[ 'platforms' ][ $platform ] = array(
+		'name' => $pinfo['name'],
+		"enabled" => EAPBase::getCfgValue( "{$platform}_enabled", false ),
+		"id"      => EAPBase::getCfgValue( "{$platform}_id",      ''    ),
+		"secret"  => EAPBase::getCfgValue( "{$platform}_secret",  ''    ),
+	);
+}
 
 // Setup the template.
 $template->assign('extauth',$tplargs);
+
