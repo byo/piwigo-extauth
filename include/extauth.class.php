@@ -24,7 +24,6 @@
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('eapbase.class.php');
-include_once('eapfacebook.class.php');
 include_once('eapoauth2.class.php');
 include_once('platforms.php');
 
