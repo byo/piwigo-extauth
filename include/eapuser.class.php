@@ -25,6 +25,7 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('eapbase.class.php');
 include_once('defs.php');
+include_once('platforms.php');
 
 include_once( PHPWG_ROOT_PATH.'include/functions_user.inc.php' );
 
@@ -98,7 +99,7 @@ class EAPUser extends EAPBase
 	
 	public static function getPendingEntries()
 	{
-		global $conf;
+		global $conf, $PLATFORMS;
 		
 		$ret = array( 'eap_users' => array(), 'users' => array() );
 		
@@ -112,6 +113,12 @@ class EAPUser extends EAPBase
 		{
 			while ( $row = pwg_db_fetch_assoc( $query ) )
 			{
+				if ( isset( $PLATFORMS[ $row['platform'] ] ) )
+				{
+					$platform = $PLATFORMS[ $row['platform'] ];
+					$row['platformLink'] = $platform['url'];
+					$row['platformProfileLink'] = sprintf( $platform['profileUrl'], $row['id'] );
+				}
 				$ret['eap_users'][] = $row;
 			}
 		}

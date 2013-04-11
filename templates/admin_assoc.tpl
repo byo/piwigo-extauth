@@ -34,9 +34,9 @@
 			{foreach from=$extauthpending.eap_users item=eu}
 			{strip}
 				<tr>
-					{if $eu.platform == 'FACEBOOK'}
-						<td><a target="_blank" href="http://www.facebook.com">Facebook</a></td>
-						<td><a target="_blank" href="http://www.facebook.com/{$eu.id|escape}">{$eu.id|@escape}</a></td>
+					{if isset( $eu.platformLink ) }
+						<td><a target="_blank" href="{$eu.platformLink|@escape}">{$eu.platform|@escape}</a></td>
+						<td><a target="_blank" href="{$eu.platformProfileLink|@escape}">{$eu.id|@escape}</a></td>
 					{else}
 						<td>{$eu.platform|@escape}</td>
 						<td>{$eu.id|@escape}</td>
