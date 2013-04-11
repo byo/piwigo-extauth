@@ -31,7 +31,7 @@
 	{else}
 		<table border="1" cellspacing="0" cellpadding="5" >
 			<tr><th>{'Platform'|@translate}</th><th>{'Platform id'|@translate}</th><th>{'User'|@translate}</th></tr>
-			{foreach from=$extauthpending.eap_users item=eu}
+			{foreach from=$extauthpending.eap_users item=eu key=idx}
 			{strip}
 				<tr>
 					{if isset( $eu.platformLink ) }
@@ -42,9 +42,9 @@
 						<td>{$eu.id|@escape}</td>
 					{/if}
 					<td>
-						<input type="hidden" name="user[{$smarty.foreach.eu.index}][platform]" value="{$eu.platform|@escape}" />
-						<input type="hidden" name="user[{$smarty.foreach.eu.index}][id]" value="{$eu.id|@escape}" />
-						<select name="user[{$smarty.foreach.eu.index}][user_id]">
+						<input type="hidden" name="user[{$idx}][platform]" value="{$eu.platform|@escape}" />
+						<input type="hidden" name="user[{$idx}][id]" value="{$eu.id|@escape}" />
+						<select name="user[{$idx}][user_id]">
 							<option value="-1">----</option>
 							{foreach from=$extauthpending.users item=u}
 								<option value="{$u.user_id|@escape}">{$u.user_name|@escape}</option>
