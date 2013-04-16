@@ -44,10 +44,13 @@ class EAPOAuth2 extends EAPBase
 
 	public function getLoginUrl()
 	{
+		$opts = $this->platformConfig( 'opts' );
+		$opts[ 'state' ] = $this->generateNewCSRFState();
+
 		$ret = $this->oauth->getAuthUrl(
 			$this->platformConfig( 'authorize' ), 
 			$this->getRedirectUrl(),
-			$this->platformConfig( 'opts' )
+			$opts
 		);
 		return $ret;
 	}
@@ -56,6 +59,9 @@ class EAPOAuth2 extends EAPBase
 	{
 		try
 		{
+			// Protect against CSRF attack
+			$this->validateCSRFState( $_GET['state'] );
+
 			// get access token
 			$obj = $this->oauth->getToken(
 				$this->platformConfig( 'access_token' ),
@@ -82,6 +88,31 @@ class EAPOAuth2 extends EAPBase
 		{
 			error_log( "Exception: $e" );
 			return FALSE;
+		}
+	}
+
+	// Get the name of session variable that will store the CSRF
+	protected function getCSRFStateVariableName()
+	{
+		return 'extauth_oauth2_state_' . $this->platform;
+	}
+
+	// Create new CSRF state value, store it in the session and return back
+	protected function generateNewCSRFState()
+	{
+		$state = md5(uniqid(mt_rand(), true));
+		pwg_set_session_var( $this->getCSRFStateVariableName(), $state );
+		return $state;
+	}
+
+	// Validate the CSRF state
+	protected function validateCSRFState( $state )
+	{
+		$saved = pwg_get_session_var( $this->getCSRFStateVariableName() );
+		pwg_unset_session_var( $this->getCSRFStateVariableName() );
+		if ( $saved !== $state )
+		{
+			throw new Exception( "Potential CSRF attack detected" );
 		}
 	}
 
