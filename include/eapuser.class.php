@@ -102,6 +102,29 @@ class EAPUser extends EAPBase
 		global $conf, $PLATFORMS;
 		
 		$ret = array( 'eap_users' => array(), 'users' => array() );
+
+		$emailCache = array();
+		$query = pwg_query( "
+			SELECT 
+				".$conf['user_fields']['id']." as user_id,
+				".$conf['user_fields']['username']." as user_name,
+				".$conf['user_fields']['email']." as email
+			FROM
+				".USERS_TABLE."
+			ORDER BY
+				user_name
+				");
+		if ( !empty( $query ) )
+		{
+			while( $row = pwg_db_fetch_assoc($query) )
+			{
+				$ret['users'][] = $row;
+				if ( $row['email'] != '' )
+				{
+					$emailCache[$row['email']] = $row['user_id'];
+				}
+			}
+		}
 		
 		$query = pwg_query( "
 			SELECT platform, id, name, email
@@ -119,24 +142,15 @@ class EAPUser extends EAPBase
 					$row['platformLink'] = $platform['url'];
 					$row['platformProfileLink'] = sprintf( $platform['profileUrl'], $row['id'] );
 				}
+				if ( isset( $emailCache[$row['email']] ) )
+				{
+					$row['suggestedUserId'] = $emailCache[$row['email']];
+				}
+				else
+				{
+					$row['suggestedUserId'] = -1;
+				}
 				$ret['eap_users'][] = $row;
-			}
-		}
-		
-		$query = pwg_query( "
-			SELECT 
-				".$conf['user_fields']['id']." as user_id,
-				".$conf['user_fields']['username']." as user_name
-			FROM
-				".USERS_TABLE."
-			ORDER BY
-				user_name
-				");
-		if ( !empty( $query ) )
-		{
-			while( $row = pwg_db_fetch_assoc($query) )
-			{
-				$ret['users'][] = $row;
 			}
 		}
 		

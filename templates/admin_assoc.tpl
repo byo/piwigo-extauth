@@ -47,7 +47,7 @@
 						<select name="user[{$idx}][user_id]">
 							<option value="-1">----</option>
 							{foreach from=$extauthpending.users item=u}
-								<option value="{$u.user_id|@escape}">{$u.user_name|@escape}</option>
+								<option value="{$u.user_id|@escape}"{if $eu.suggestedUserId == $u.user_id} selected="selected"{/if}>{$u.user_name|@escape}</option>
 							{/foreach}
 						</select>
 					</td>
