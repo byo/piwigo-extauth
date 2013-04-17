@@ -32,7 +32,11 @@ if ( isset($_POST['submit']) )
 	{	
 		foreach( $_POST['user'] as $user )
 		{
-			if ( $user['user_id'] > 0 )
+			if ( $user['user_id'] === 'new' )
+			{
+				EAPUser::createUser( $user['platform'], $user['id'], $user['name'], $user['email'] );
+			}
+			else if ( $user['user_id'] > 0 )
 			{
 				EAPUser::associateUser( $user['platform'], $user['id'], $user['user_id'] );
 			}

@@ -30,7 +30,13 @@
 		<p>{'There are no account waiting for association. Ask your users to login using external method in order to associate them with the system.'|@translate}</p>
 	{else}
 		<table border="1" cellspacing="0" cellpadding="5" >
-			<tr><th>{'Platform'|@translate}</th><th>{'Platform id'|@translate}</th><th>{'User'|@translate}</th></tr>
+			<tr>
+				<th>{'Platform'|@translate}</th>
+				<th>{'Platform id'|@translate}</th>
+				<th>{'Name'|@translate}</th>
+				<th>{'Email'|@translate}</th>
+				<th>{'User'|@translate}</th>
+			</tr>
 			{foreach from=$extauthpending.eap_users item=eu key=idx}
 			{strip}
 				<tr>
@@ -41,11 +47,19 @@
 						<td>{$eu.platform|@escape}</td>
 						<td>{$eu.id|@escape}</td>
 					{/if}
+					<td>{$eu.name|@escape}</td>
+					<td><a href="mailto:{$eu.email|@escape:'url'}">{$eu.email|@escape}</a></td>
 					<td>
 						<input type="hidden" name="user[{$idx}][platform]" value="{$eu.platform|@escape}" />
 						<input type="hidden" name="user[{$idx}][id]" value="{$eu.id|@escape}" />
+						<input type="hidden" name="user[{$idx}][name]" value="{$eu.name|@escape}" />
+						<input type="hidden" name="user[{$idx}][email]" value="{$eu.email|@escape}" />
 						<select name="user[{$idx}][user_id]">
 							<option value="-1">----</option>
+							{if $eu.name != '' && $eu.email != ''}
+								<option value="new">{'Add new user: '|@translate}{$eu.name|@escape}</option>
+								<option value="-1">----</option>
+							{/if}
 							{foreach from=$extauthpending.users item=u}
 								<option value="{$u.user_id|@escape}"{if $eu.suggestedUserId == $u.user_id} selected="selected"{/if}>{$u.user_name|@escape}</option>
 							{/foreach}

@@ -171,5 +171,16 @@ class EAPUser extends EAPBase
 		
 		pwg_query($query);
 	}
+
+	public static function createUser( $platform, $id, $name, $email )
+	{
+		$errors = register_user( $name, md5( mt_rand() . mt_rand() ), $email, false );
+		if ( count( $errors ) > 0 ) return false;
+
+		$user_id = get_userid( $name );
+		if ( $user_id === FALSE ) return false;
+
+		return self::associateUser( $platform, $id, $user_id );
+	}
 }
 
