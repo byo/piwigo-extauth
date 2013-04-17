@@ -24,7 +24,6 @@
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 include_once('eapbase.class.php');
-include_once('eapoauth2.class.php');
 include_once('platforms.php');
 
 class ExtAuth extends EAPBase
@@ -69,10 +68,9 @@ class ExtAuth extends EAPBase
 			$enabled = self::getCfgValue( "{$name}_enabled", false );
 			if ( $enabled )
 			{
-				$oauth = new EAPOauth2( $name );
 				$data['platforms'][$name] = array(
 					'info'     => $info,
-					'loginUrl' => $oauth->getLoginUrl()
+					'loginUrl' => $this->getUrl() . $info[ 'loginScript' ]
 				);
 				$anyEnabled = true;
 			}
