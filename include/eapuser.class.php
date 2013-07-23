@@ -55,34 +55,52 @@ class EAPUser extends EAPBase
 			// Unknown user
 			$query = "
 			INSERT INTO ".EAP_USERS."(
-			user_id,
-			platform,
-			id,
-			date_added,
-			name,
-			email
+				user_id,
+				platform,
+				id,
+				date_added,
+				name,
+				email
 			)
 			VALUES(
-			-1,
-			'" . pwg_db_real_escape_string($hostPlatform) . "',
-			'" . pwg_db_real_escape_string($hostPlatformId) . "',
-			NOW(),
-			'" . pwg_db_real_escape_string($userInfo['name']) . "',
-			'" . pwg_db_real_escape_string($userInfo['email']) . "'
+				-1,
+				'" . pwg_db_real_escape_string($hostPlatform  ) . "',
+				'" . pwg_db_real_escape_string($hostPlatformId) . "',
+				NOW(),
+				'" . pwg_db_real_escape_string($userInfo['name' ]) . "',
+				'" . pwg_db_real_escape_string($userInfo['email']) . "'
 			)";
-				
+
 			pwg_query($query);
 
 			self::showPending();
 		}
 		else if ( $data['id'] === null )
 		{
+			self::updateUserEntries( $hostPlatform, $hostPlatformId, $userInfo );
 			self::showPending();
 		}
 		else
 		{
+			self::updateUserEntries( $hostPlatform, $hostPlatformId, $userInfo );
 			self::login( $data['id'] );
 		}
+	}
+
+	private static function updateUserEntries( $hostPlatform, $hostPlatformId, $userInfo )
+	{
+		$query = "
+			UPDATE ".EAP_USERS."
+			SET
+				name       = '" . pwg_db_real_escape_string($userInfo['name' ]) . "',
+				email      = '" . pwg_db_real_escape_string($userInfo['email']) . "',
+				date_added = IFNULL( date_added, NOW() )
+			WHERE
+				platform = '" . pwg_db_real_escape_string($hostPlatform  ) . "' AND
+				id       = '" . pwg_db_real_escape_string($hostPlatformId) . "'
+                        ";
+
+		pwg_query( $query );
 	}
 
 	private static function showPending()
@@ -96,16 +114,16 @@ class EAPUser extends EAPBase
 		log_user( $user_id, false );
 		redirect( get_gallery_home_url() );
 	}
-	
+
 	public static function getPendingEntries()
 	{
 		global $conf, $PLATFORMS;
-		
+
 		$ret = array( 'eap_users' => array(), 'users' => array() );
 
 		$emailCache = array();
 		$query = pwg_query( "
-			SELECT 
+			SELECT
 				".$conf['user_fields']['id']." as user_id,
 				".$conf['user_fields']['username']." as user_name,
 				".$conf['user_fields']['email']." as email
@@ -125,7 +143,7 @@ class EAPUser extends EAPBase
 				}
 			}
 		}
-		
+
 		$query = pwg_query( "
 			SELECT platform, id, name, email
 			FROM ".EAP_USERS."
@@ -153,10 +171,10 @@ class EAPUser extends EAPBase
 				$ret['eap_users'][] = $row;
 			}
 		}
-		
+
 		return $ret;
 	}
-	
+
 	public static function associateUser( $platform, $id, $user_id )
 	{
 		$query = "
@@ -168,7 +186,7 @@ class EAPUser extends EAPBase
 				id = '" . pwg_db_real_escape_string($id) . "' AND
 				user_id < 0
 		";
-		
+
 		pwg_query($query);
 	}
 
