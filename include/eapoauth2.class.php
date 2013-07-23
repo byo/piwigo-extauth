@@ -150,7 +150,9 @@ class EAPOAuth2 extends EAPBase
 		'fb' => array(
 			'authorize'     => 'https://graph.facebook.com/oauth/authorize',
 			'access_token'  => 'https://graph.facebook.com/oauth/access_token',
-			'opts'          => array(),
+			'opts'          => array(
+				'scope'     => 'email'
+			),
 			'response_type' => 'url',
 			'login_info'    => array(
 				'url'       => 'https://graph.facebook.com/me',
