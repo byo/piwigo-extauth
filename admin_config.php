@@ -34,22 +34,29 @@ if ( isset($_POST['submit']) )
 
 	foreach( $PLATFORMS as $platform => $pinfo )
 	{
-		EAPBase::setCfgValues(array(
-				"{$platform}_enabled" => isset( $_POST["{$platform}_enabled"] ) && $_POST["{$platform}_enabled"],
-				"{$platform}_id"      => $_POST["{$platform}_id"],
-				"{$platform}_secret"  => $_POST["{$platform}_secret"],
-		));
+		$changes = array(
+			"{$platform}_enabled" => isset( $_POST["{$platform}_enabled"] ) && $_POST["{$platform}_enabled"],
+			"{$platform}_id"      => $_POST["{$platform}_id"],
+		);
+
+		if ( $_POST["{$platform}_secret"] != $_POST["{$platform}_fakeSecret"] )
+		{
+			$changes[ "{$platform}_secret" ] = $_POST[ "{$platform}_secret" ];
+		}
+
+		EAPBase::setCfgValues( $changes );
 	}
 }
 
 $tplargs[ 'platforms' ] = array();
 foreach( $PLATFORMS as $platform => $pinfo )
 {
+	$fakeSecret = md5( uniqid( mt_rand() ) );
 	$tplargs[ 'platforms' ][ $platform ] = array(
 		'name' => $pinfo['name'],
-		"enabled" => EAPBase::getCfgValue( "{$platform}_enabled", false ),
-		"id"      => EAPBase::getCfgValue( "{$platform}_id",      ''    ),
-		"secret"  => EAPBase::getCfgValue( "{$platform}_secret",  ''    ),
+		"enabled"     => EAPBase::getCfgValue( "{$platform}_enabled", false ),
+		"id"          => EAPBase::getCfgValue( "{$platform}_id",      ''    ),
+		"fakeSecret"  => $fakeSecret,
 	);
 }
 

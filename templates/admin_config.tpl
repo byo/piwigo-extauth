@@ -4,7 +4,7 @@
 | Piwigo - external authentication plugin                               |
 |                                 https://github.com/byo/piwigo-extauth |
 +-----------------------------------------------------------------------+
-| Copyright(C) 2012 Bartlomiej (byo) wiecki                             |
+| Copyright(C) 2012-2013 Bartlomiej (byo) Swiecki                       |
 +-----------------------------------------------------------------------+
 | This program is free software; you can redistribute it and/or modify  |
 | it under the terms of the GNU General Public License as published by  |
@@ -34,9 +34,10 @@
 		</legend>
 	{/strip}
 	<div class="details" {if !$pl.enabled}style="display:none;"{/if}>
+	<input type="hidden" name="{$n}_fakeSecret" value="{$pl.fakeSecret|@escape}" />
 	<table>
 	<tr><td>{'Id:'|@translate}</td><td><input type="text" name="{$n}_id" value="{$pl.id|@escape}" /></td></tr>
-	<tr><td>{'Secret:'|@translate}</td><td><input type="text" name="{$n}_secret" value="{$pl.secret|@escape}" /></td></tr>
+	<tr><td>{'Secret:'|@translate}</td><td><input type="password" name="{$n}_secret" value="{$pl.fakeSecret|@escape}" /></td></tr>
 	</table>
 	</div>
 	</fieldset>
