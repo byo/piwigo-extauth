@@ -29,15 +29,15 @@ load_language( "plugin.lang", dirname(__FILE__).'/' );
 $template->set_filename('plugin_admin_content', dirname(__FILE__).'/templates/admin.tpl');
 
 if (!isset($_GET['tab']))
-	$page['tab'] = 'config';
+	$page['tab'] = 'assoc';
 else
 	$page['tab'] = $_GET['tab'];
 
 $my_base_url = get_admin_plugin_menu_link(__FILE__);
 
 $tabsheet = new tabsheet();
-$tabsheet->add( 'config', l10n('Configuration'), add_url_params( $my_base_url, array('tab'=>'config') ) );
 $tabsheet->add( 'assoc', l10n('Associate accounts'), add_url_params( $my_base_url, array('tab'=>'assoc') ) );
+$tabsheet->add( 'config', l10n('Configuration'), add_url_params( $my_base_url, array('tab'=>'config') ) );
 $tabsheet->select($page['tab']);
 
 $tabsheet->assign();
