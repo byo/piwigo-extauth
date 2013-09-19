@@ -29,21 +29,6 @@ require_once(PHPWG_ROOT_PATH . 'include/functions_session.inc.php' );
 include_once('include/eapuser.class.php');
 include_once('include/eapoauth2.class.php');
 
-class ConfigSetter extends EAPBase
-{
-	public static function setup()
-	{
-		self::setCfgValues(array(
-			'fb_id'     => '494494263910157',
-			'fb_secret' => '6a89b3021c24db58d95714ff739fcd47',
-			'google_id' => '553659678064.apps.googleusercontent.com',
-			'google_secret' => 'FpgMVQ8sp9C6b_ujamz9RJ4V',
-		));
-	}
-}
-
-ConfigSetter::setup();
-
 isset($_GET['p']) or die( "Missing platform identifier" );
 
 $platform = $_GET['p'];
