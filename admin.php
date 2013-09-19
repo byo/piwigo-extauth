@@ -3,7 +3,7 @@
 // | Piwigo - external authentication plugin                               |
 // |                                 https://github.com/byo/piwigo-extauth |
 // +-----------------------------------------------------------------------+
-// | Copyright(C) 2012 Bartlomiej (byo) wiecki                             |
+// | Copyright(C) 2012-2013 Bartlomiej (byo) Swiecki                       |
 // +-----------------------------------------------------------------------+
 // | This program is free software; you can redistribute it and/or modify  |
 // | it under the terms of the GNU General Public License as published by  |
