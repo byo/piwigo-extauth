@@ -34,8 +34,9 @@ class ExtAuth extends EAPBase
 		add_event_handler('get_admin_plugin_menu_links',  array( $this, 'admin_menu' ) );
 		add_event_handler('blockmanager_register_blocks', array( $this, 'register_menubar_blocks' ) );
 		add_event_handler('blockmanager_apply',           array( $this, 'apply_menubar_blocks' ) );
+		add_event_handler('loc_begin_identification',     array( $this, 'apply_login_page_blocks' ) );
 	}
-	
+
 	// Add an entry to the 'Plugins' menu.
 	public function admin_menu( $menu )
 	{
@@ -52,17 +53,14 @@ class ExtAuth extends EAPBase
 		$mgr[0]->register_block( new RegisteredBlock( 'eapLogin', 'Connect with', 'eap' ) );
 	}
 
-	// Prepare out custom menu block to contain usual login form and extra login fields
-	public function apply_menubar_blocks( $mgr )
+	// Grab information to be used by templates
+	private function get_template_data()
 	{
 		global $PLATFORMS;
 
-		// We only alter stuff if we're not logged in
-		if ( !is_a_guest() ) return;
-
 		$data = array('platforms'=>array());
 		$anyEnabled = false;
-		
+
 		foreach( $PLATFORMS as $name => $info )
 		{
 			$enabled = self::getCfgValue( "{$name}_enabled", false );
@@ -75,15 +73,56 @@ class ExtAuth extends EAPBase
 				$anyEnabled = true;
 			}
 		}
-		
-		if ( !$anyEnabled ) return;
+
+		if ( !$anyEnabled )
+		{
+			return FALSE;
+		}
+
+		return $data;
+	}
+
+	// Add block with extra login buttons
+	public function apply_menubar_blocks( $mgr )
+	{
+                // We only alter stuff if we're not logged in
+                if ( !is_a_guest() ) return;
+
+		$data = $this->get_template_data();
+		if ( $data === FALSE ) return;
 
 		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
 		{
 			load_language( "plugin.lang", self::getPath() );
-			
+
 			$block->data = $data;
 			$block->template = $this->getPath() . "templates/login.tpl";
 		}
+	}
+
+	// Add extra content to the login page with external auth buttons
+	public function apply_login_page_blocks()
+	{
+		global $template, $conf;
+
+		load_language( "plugin.lang", self::getPath() );
+
+		$data = $this->get_template_data();
+		if ( $data === FALSE ) return;
+
+		// Load extra template data
+		$template->assign(array(
+			'EXTAUTH_DATA' => $data
+		));
+
+		// Code injection will be done in prefilter
+		$template->set_prefilter( 'identification', 'ExtAuth::apply_login_page_blocks_prefilter' );
+	}
+
+	public static function apply_login_page_blocks_prefilter( $content )
+	{
+		$search = '<form';
+		$extraContent = file_get_contents( EAP_PATH . '/templates/login_page.tpl' );
+		return str_replace( $search, $extraContent . $search, $content );
 	}
 }

@@ -4,7 +4,7 @@
 | Piwigo - external authentication plugin                               |
 |                                 https://github.com/byo/piwigo-extauth |
 +-----------------------------------------------------------------------+
-| Copyright(C) 2012 Bartlomiej (byo) wiecki                             |
+| Copyright(C) 2012-2013 Bartlomiej (byo) Swiecki                       |
 +-----------------------------------------------------------------------+
 | This program is free software; you can redistribute it and/or modify  |
 | it under the terms of the GNU General Public License as published by  |
@@ -25,9 +25,10 @@
 *}
 {combine_css path="plugins/external_auth/css/style.css"}
 
-<dt>{'Connect with:'|@translate}</dt>
-<dd class="extauth">
-{foreach from=$block->data.platforms key=n item=pl}
+<fieldset id="extauth_extra_login_page" class="extauth">
+<legend>{'Connect with:'|@translate}</legend>
+<div class="wrapper"><div class="center">
+{foreach from=$EXTAUTH_DATA.platforms key=n item=pl}
 {strip}
 	<p class="{$n|escape}">
 		<a href="{$pl.loginUrl|escape}">
@@ -38,4 +39,6 @@
 	</p>
 {/strip}
 {/foreach}
-</dd>
+<div class="clear"></div>
+</div></div>
+</fieldset>

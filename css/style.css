@@ -17,3 +17,24 @@
 	background: url("../images/fbconnect.png") no-repeat scroll left top transparent;
 }
 
+#extauth_extra_login_page p {
+	float: left;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#extauth_extra_login_page .wrapper {
+	width: 100%;
+	text-align: center;
+}
+
+#extauth_extra_login_page .center {
+    display:inline-block;
+    *display:inline;/* IE*/
+    *zoom:1;/* IE*/
+}
+
+#extauth_extra_login_page .clear {
+	clear: both;
+}
