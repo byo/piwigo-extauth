@@ -54,7 +54,7 @@ class ExtAuth extends EAPBase
 	}
 
 	// Grab information to be used by templates
-	private function get_template_data()
+	private function get_template_data( $redirect = null )
 	{
 		global $PLATFORMS;
 
@@ -66,9 +66,16 @@ class ExtAuth extends EAPBase
 			$enabled = self::getCfgValue( "{$name}_enabled", false );
 			if ( $enabled )
 			{
+				$loginUrl =  $this->getUrl() . $info[ 'loginScript' ];
+				if ( !is_null( $redirect ) )
+				{
+					$loginUrl .= ( strpos( $loginUrl, '?' ) === FALSE ) ? '?' : '&';
+					$loginUrl .= 'reditect=' . urlencode( $redirect );
+				}
+
 				$data['platforms'][$name] = array(
 					'info'     => $info,
-					'loginUrl' => $this->getUrl() . $info[ 'loginScript' ]
+					'loginUrl' => $loginUrl,
 				);
 				$anyEnabled = true;
 			}
@@ -107,7 +114,8 @@ class ExtAuth extends EAPBase
 
 		load_language( "plugin.lang", self::getPath() );
 
-		$data = $this->get_template_data();
+		$redirect = isset( $_GET['redirect'] ) ? $_GET['redirect'] : null;
+		$data = $this->get_template_data( $redirect );
 		if ( $data === FALSE ) return;
 
 		// Load extra template data
