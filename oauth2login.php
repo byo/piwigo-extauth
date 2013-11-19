@@ -33,10 +33,18 @@ isset($_GET['p']) or die( "Missing platform identifier" );
 
 $platform = $_GET['p'];
 $oauth = new EAPOauth2( $platform );
+$redirectSessionVar = 'extauth_final_redirect';
 
 // Get the access code
 if ( !isset( $_GET['code'] ) )
 {
+	// Save the redirect url in session, storing it within url leads to problems
+	// since the back url passed to oauth2 provider is not deterministic
+	if ( isset( $_GET['redirect'] ) )
+	{
+		pwg_set_session_var( $redirectSessionVar, $_GET['redirect'] );
+	}
+
 	$url = $oauth->getLoginUrl();
 	header("Location: $url");
 	exit(0);
@@ -46,5 +54,5 @@ if ( !isset( $_GET['code'] ) )
 $user = $oauth->grabLoginInfo();
 if ( $user === FALSE ) die( 'Error' );
 
-EAPUser::processAuthentication( $platform, $user['id'], $user );
+EAPUser::processAuthentication( $platform, $user['id'], $user, pwg_get_session_var( $redirectSessionVar ) );
 

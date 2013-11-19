@@ -31,7 +31,7 @@ include_once( PHPWG_ROOT_PATH.'include/functions_user.inc.php' );
 
 class EAPUser extends EAPBase
 {
-	public static function processAuthentication( $hostPlatform, $hostPlatformId, $userInfo )
+	public static function processAuthentication( $hostPlatform, $hostPlatformId, $userInfo, $finalRedirect )
 	{
 		global $conf;
 
@@ -83,7 +83,7 @@ class EAPUser extends EAPBase
 		else
 		{
 			self::updateUserEntries( $hostPlatform, $hostPlatformId, $userInfo );
-			self::login( $data['id'] );
+			self::login( $data['id'], $finalRedirect );
 		}
 	}
 
@@ -109,10 +109,17 @@ class EAPUser extends EAPBase
 		exit(0);
 	}
 
-	private static function login( $user_id )
+	private static function login( $user_id, $finalRedirect )
 	{
 		log_user( $user_id, false );
-		redirect( get_gallery_home_url() );
+		if ( is_null( $finalRedirect ) )
+		{
+			redirect( get_gallery_home_url() );
+		}
+		else
+		{
+			redirect( $finalRedirect );
+		}
 	}
 
 	public static function getPendingEntries()

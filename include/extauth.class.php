@@ -70,7 +70,7 @@ class ExtAuth extends EAPBase
 				if ( !is_null( $redirect ) )
 				{
 					$loginUrl .= ( strpos( $loginUrl, '?' ) === FALSE ) ? '?' : '&';
-					$loginUrl .= 'reditect=' . urlencode( $redirect );
+					$loginUrl .= 'redirect=' . urlencode( $redirect );
 				}
 
 				$data['platforms'][$name] = array(
@@ -114,7 +114,7 @@ class ExtAuth extends EAPBase
 
 		load_language( "plugin.lang", self::getPath() );
 
-		$redirect = isset( $_GET['redirect'] ) ? $_GET['redirect'] : null;
+		$redirect = isset( $_GET['redirect'] ) ? urldecode( $_GET['redirect'] ) : null;
 		$data = $this->get_template_data( $redirect );
 		if ( $data === FALSE ) return;
 

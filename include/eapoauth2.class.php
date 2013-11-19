@@ -36,7 +36,7 @@ class EAPOAuth2 extends EAPBase
 		$this->validatePlatform();
 		$this->oauth = new LightOAuth2( $this->getClientId(), $this->getSecret() );
 	}
-	
+
 	private function getRedirectUrl()
 	{
 		return EAP_URL . 'oauth2login.php?p=' . urlencode( $this->platform );
@@ -48,7 +48,7 @@ class EAPOAuth2 extends EAPBase
 		$opts[ 'state' ] = $this->generateNewCSRFState();
 
 		$ret = $this->oauth->getAuthUrl(
-			$this->platformConfig( 'authorize' ), 
+			$this->platformConfig( 'authorize' ),
 			$this->getRedirectUrl(),
 			$opts
 		);
@@ -66,11 +66,11 @@ class EAPOAuth2 extends EAPBase
 			$obj = $this->oauth->getToken(
 				$this->platformConfig( 'access_token' ),
 				$this->getRedirectUrl(),
-				$_GET['code'], 
+				$_GET['code'],
 				$this->platformConfig( 'response_type' )
 			);
 			$this->oauth->setToken($obj->access_token);
-			
+
 			$login_info = $this->platformConfig( 'login_info' );
 			$response = json_decode( $this->oauth->fetch( $login_info['url'] ), true );
 			if ( $response === null )
@@ -127,12 +127,12 @@ class EAPOAuth2 extends EAPBase
 	{
 		return self::getCfgValue( $this->platform . '_secret', '' );
 	}
-	
+
 	private function platformConfig( $data )
 	{
 		return self::$platformConfig[ $this->platform ][ $data ];
 	}
-	
+
 	private function validatePlatform()
 	{
 		if ( !isset( self::$platformConfig[ $this->platform ] ) )
@@ -143,9 +143,9 @@ class EAPOAuth2 extends EAPBase
 
 	private $platform;
 	private $oauth;
-	
+
 	private static $platformConfig = array(
-	
+
 		// Facebook OAuth configuration
 		'fb' => array(
 			'authorize'     => 'https://graph.facebook.com/oauth/authorize',
@@ -163,7 +163,7 @@ class EAPOAuth2 extends EAPBase
 				)
 			)
 		),
-		
+
 		// Google OAuth configuration
 		'google' => array(
 			'authorize'     => 'https://accounts.google.com/o/oauth2/auth',
