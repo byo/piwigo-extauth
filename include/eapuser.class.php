@@ -28,6 +28,7 @@ include_once('defs.php');
 include_once('platforms.php');
 
 include_once( PHPWG_ROOT_PATH.'include/functions_user.inc.php' );
+include_once( PHPWG_ROOT_PATH.'include/functions_mail.inc.php' );
 
 class EAPUser extends EAPBase
 {
@@ -73,6 +74,7 @@ class EAPUser extends EAPBase
 
 			pwg_query($query);
 
+			self::sendPendingEmail( $userInfo );
 			self::showPending();
 		}
 		else if ( $data['id'] === null )
@@ -101,6 +103,20 @@ class EAPUser extends EAPBase
                         ";
 
 		pwg_query( $query );
+	}
+
+	private static function sendPendingEmail( $userInfo )
+	{
+		$adminUrl = get_absolute_root_url() . 'admin.php?page=plugin&section=external_auth/admin.php';
+		pwg_mail_notification_admins(
+			get_l10n_args('New extauth user: %s', $userInfo['name'] ),
+			array(
+				get_l10n_args('User name: %s',  $userInfo['name']  ),
+				get_l10n_args('User email: %s', $userInfo['email'] ),
+				get_l10n_args('', ''),
+				get_l10n_args('User management: %s', $adminUrl),
+			)
+		);
 	}
 
 	private static function showPending()
