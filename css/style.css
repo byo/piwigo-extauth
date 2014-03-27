@@ -17,6 +17,10 @@
 	background: url("../images/fbconnect.png") no-repeat scroll left top transparent;
 }
 
+.extauth .password .inner {
+	background: url("../images/password.png") no-repeat scroll left top transparent;
+}
+
 #extauth_extra_login_page p {
 	float: left;
 	display: inline-block;
