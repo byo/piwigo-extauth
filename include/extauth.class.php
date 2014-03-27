@@ -130,8 +130,9 @@ class ExtAuth extends EAPBase
 	public static function apply_login_page_blocks_prefilter( $content )
 	{
 		$search = '<form';
+		$hideCode = ' style="display: none;" ';
 		$extraContent = file_get_contents( EAP_PATH . '/templates/login_page.tpl' );
-		return str_replace( $search, $extraContent . $search, $content );
+		return str_replace( $search, $extraContent . $search . $hideCode, $content );
 	}
 }
 
