@@ -124,7 +124,7 @@ class ExtAuth extends EAPBase
 		));
 
 		// Code injection will be done in prefilter
-		$template->set_prefilter( 'identification', 'ExtAuth::apply_login_page_blocks_prefilter' );
+		$template->set_prefilter( 'identification', 'eap_login_prefilter' );
 	}
 
 	public static function apply_login_page_blocks_prefilter( $content )
@@ -133,4 +133,9 @@ class ExtAuth extends EAPBase
 		$extraContent = file_get_contents( EAP_PATH . '/templates/login_page.tpl' );
 		return str_replace( $search, $extraContent . $search, $content );
 	}
+}
+
+function eap_login_prefilter( $content )
+{
+	return ExtAuth::apply_login_page_blocks_prefilter( $content );
 }
