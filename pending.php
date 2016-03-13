@@ -31,8 +31,6 @@ load_language( "plugin.lang", dirname(__FILE__).'/' );
 $title= l10n('Approval pending');
 $page['body_id'] = 'extAuthPending';
 
-trigger_action('loc_begin_eap_pending');
-
 $template->set_filename('eap_pending', realpath(dirname(__FILE__).'/templates/pending.tpl'));
 
 // include menubar

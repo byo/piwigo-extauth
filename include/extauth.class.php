@@ -98,7 +98,7 @@ class ExtAuth extends EAPBase
 		$data = $this->get_template_data();
 		if ( $data === FALSE ) return;
 
-		if ( $block = &$mgr[0]->get_block( 'eapLogin' ) )
+		if ( $block = $mgr[0]->get_block( 'eapLogin' ) )
 		{
 			load_language( "plugin.lang", self::getPath() );
 
