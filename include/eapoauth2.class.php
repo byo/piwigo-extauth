@@ -23,7 +23,6 @@
 
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
-// Include facebook sdk classes
 include_once('LightOAuth2.php' );
 include_once('eapbase.class.php');
 
@@ -153,7 +152,7 @@ class EAPOAuth2 extends EAPBase
 			'opts'          => array(
 				'scope'     => 'email'
 			),
-			'response_type' => 'url',
+			'response_type' => 'json',
 			'login_info'    => array(
 				'url'       => 'https://graph.facebook.com/me',
 				'fields'    => array(
